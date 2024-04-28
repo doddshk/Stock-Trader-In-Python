@@ -4,7 +4,8 @@ SEC_KEY = ''
 PUB_KEY = ''
 BASE_URL = ''
 api = tradeapi.REST(key_id=PUB_KEY, secret_key=SEC_KEY, base_url=BASE_URL) #base url only used in paper trading
-
+symb = 'SPY' #ticker 
+pos_held = False
 
 def buy(ticker,amount): #buy stock   
     api.submit_order(
@@ -25,7 +26,6 @@ def sell(ticker,amount): #sell stock
 
 def main():
     #Following code gets and displays market data for stock symb.
-    symb = 'SPY' #ticker 
     while True:
         print("")
         print("Checking Market Price")
@@ -40,3 +40,12 @@ def main():
     print("Moving Average: " + str(moving_average))
     print("Last Price: " + str(last_price))
     time.sleep(60)
+
+    if ma+0.1 < last_price and not pos_held:
+        print("buy")
+        buy(ticker,1)
+        pos_held = True
+    elif ma-0.1 < last_price and pos_held:
+        print("sell")
+        sell(ticker,1)
+        pos_held = False 
